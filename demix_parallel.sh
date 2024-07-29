@@ -17,4 +17,4 @@ my_func() {
 }
 
 export -f my_func
-parallel -j 5 my_func ::: variants/* ::: depths/ ::: outputs/
+parallel -j 10 my_func ::: variants/* ::: depths/ ::: outputs/
