@@ -1,3 +1,7 @@
+# for uniform naming
+# rename 1.tsv 1.variants.tsv *1.tsv
+# rename _depths.txt .depth *_depths.txt
+
 #!/bin/bash
 my_func() {
     fn=$1
@@ -17,4 +21,5 @@ my_func() {
 }
 
 export -f my_func
-parallel -j 5 my_func ::: variants/* ::: depths/ ::: outputs/
+parallel -j 24 my_func ::: variants/* ::: depths/ ::: outputs/
+freyja aggregate outputs/ --output agg_outputs.tsv
