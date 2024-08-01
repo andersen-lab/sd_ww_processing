@@ -1,6 +1,9 @@
 # for uniform naming
-# rename 1.tsv 1.variants.tsv *1.tsv
-# rename _depths.txt .depth *_depths.txt
+cd variants/
+rename 1.tsv 1.variants.tsv *1.tsv
+cd ../depths/
+rename _depths.txt .depth *_depths.txt
+cd ..
 
 #!/bin/bash
 my_func() {
@@ -23,3 +26,6 @@ my_func() {
 export -f my_func
 parallel -j 24 my_func ::: variants/* ::: depths/ ::: outputs/
 freyja aggregate outputs/ --output agg_outputs.tsv
+
+python polish_outputs.py
+python calc_relegrowthrates.py
