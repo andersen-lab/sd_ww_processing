@@ -28,4 +28,4 @@ parallel -j 24 my_func ::: variants/* ::: depths/ ::: outputs/
 freyja aggregate outputs/ --output agg_outputs.tsv
 
 python polish_outputs.py
-python calc_relegrowthrates.py
+python calc_relgrowthrates.py
