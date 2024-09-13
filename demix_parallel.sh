@@ -4,7 +4,8 @@ rename 1.tsv 1.variants.tsv *1.tsv
 cd ../depths/
 rename _depths.txt .depth *_depths.txt
 cd ..
-
+freyja update --outdir . 
+freyja update
 #!/bin/bash
 my_func() {
     fn=$1
