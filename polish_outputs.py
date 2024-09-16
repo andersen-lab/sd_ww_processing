@@ -8,7 +8,7 @@ import yaml
 # # replace with freyja path
 # sys.path.insert(1, '/shared/workspace/software/freyja')
 def get_col_date(short_name, site):
-    col_date = short_name.strip(site)
+    col_date = short_name.removeprefix(site)
     day = ''
     if 'JAN' in col_date:
         month = 1
