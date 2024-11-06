@@ -67,7 +67,7 @@ lineage_info = {}
 for lineage in lineages_yml:
     lineage_info[lineage['name']] = {'children': lineage['children']}
 agg_df = pd.read_csv(f'agg_outputs.tsv', skipinitialspace=True, sep='\t',index_col=0)
-agg_df = agg_df[agg_df['coverage'] > 70]
+agg_df = agg_df[agg_df['coverage'] > 65]
 agg_df = prepLineageDict(agg_df,thresh=0.0000000001,config=plot_config,lineage_info=lineage_info)
 formatted_agg = agg_df['linDict'].apply(pd.Series)
 # drop any columns that aren't in the plot_config file
