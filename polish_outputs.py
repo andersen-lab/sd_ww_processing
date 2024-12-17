@@ -7,46 +7,6 @@ import yaml
 # import sys
 # # replace with freyja path
 # sys.path.insert(1, '/shared/workspace/software/freyja')
-def get_col_date(short_name, site):
-    col_date = short_name.removeprefix(site)
-    day = ''
-    if 'JAN' in col_date:
-        month = 1
-        day = col_date.strip('JAN')
-    elif 'FEB' in col_date:
-        month = 2
-        day = col_date.strip('FEB')
-    elif 'MAR' in col_date:
-        month = 3
-        day = col_date.strip('MAR')
-    elif 'APR' in col_date:
-        month = 4
-        day = col_date.strip('APR')
-    elif 'MAY' in col_date:
-        month = 5
-        day = col_date.strip('MAY')
-    elif 'JUN' in col_date:
-        month = 6
-        day = col_date.strip('JUN')
-    elif 'JUL' in col_date:
-        month = 7
-        day = col_date.strip('JUL')
-    elif 'AUG' in col_date:
-        month = 8
-        day = col_date.strip('AUG')
-    elif 'SEP' in col_date:
-        month = 9
-        day = col_date.strip('SEP')
-    elif 'OCT' in col_date:
-        month = 10
-        day = col_date.strip('OCT')
-    elif 'NOV' in col_date:
-        month = 11
-        day = col_date.strip('NOV')
-    elif 'DEC' in col_date:
-        month = 12
-        day = col_date.strip('DEC')
-    return str(month) + '/' + str(day) + '/' + str(datetime.now().year)[-2:]
 with open("plot_config.yml", "r" ) as f :
     plot_config = yaml.safe_load(f)
 #make copy of config for later
@@ -87,12 +47,16 @@ sb_agg = formatted_agg[formatted_agg.index.str.contains('SB')]
 pl_agg = pl_agg.reset_index()
 enc_agg = enc_agg.reset_index()
 sb_agg = sb_agg.reset_index()
+
+lookup = pd.read_csv('all-ww-metadata.csv').drop_duplicates(keep='first')
+lookup = lookup.set_index('sample_name')
 for i in range(len(pl_agg)):
-    pl_agg['index'][i] = pl_agg['index'][i].replace(pl_agg['index'][i], get_col_date(pl_agg['index'][i].split('__')[0].split('_')[3], "PL"))
+    pl_agg['index'][i] = lookup.loc[pl_agg['index'][i].split('__')[0],'collection_date']
 for i in range(len(enc_agg)):
-    enc_agg['index'][i] = enc_agg['index'][i].replace(enc_agg['index'][i], get_col_date(enc_agg['index'][i].split('__')[0].split('_')[3], "ENC"))
+    enc_agg['index'][i] = lookup.loc[enc_agg['index'][i].split('__')[0],'collection_date']
 for i in range(len(sb_agg)):
-    sb_agg['index'][i] = sb_agg['index'][i].replace(sb_agg['index'][i], get_col_date(sb_agg['index'][i].split('__')[0].split('_')[3], "SB"))
+    sb_agg['index'][i] = lookup.loc[sb_agg['index'][i].split('__')[0],'collection_date']
+
 pl_agg = pl_agg.rename(columns={"index": "Date"})
 enc_agg = enc_agg.rename(columns={"index": "Date"})
 sb_agg = sb_agg.rename(columns={"index": "Date"})
@@ -100,7 +64,7 @@ sb_agg = sb_agg.rename(columns={"index": "Date"})
 # https://raw.githubusercontent.com/andersen-lab/SARS-CoV-2_WasteWater_San-Diego/master/PointLoma_sewage_seqs.csv
 # https://raw.githubusercontent.com/andersen-lab/SARS-CoV-2_WasteWater_San-Diego/master/Encina_sewage_seqs.csv
 # https://raw.githubusercontent.com/andersen-lab/SARS-CoV-2_WasteWater_San-Diego/master/SouthBay_sewage_seqs.csv
-pl_agg['Date'] = pd.to_datetime(pl_agg['Date'], format='%m/%d/%y')
+pl_agg['Date'] = pd.to_datetime(pl_agg['Date'], format='%Y-%m-%d')
 pl_git_df = pd.read_csv("https://raw.githubusercontent.com/andersen-lab/SARS-CoV-2_WasteWater_San-Diego/master/PointLoma_sewage_seqs.csv")
 # pl_git_df = pl_git_df.drop(pl_git_df.tail(16).index)
 pl_git_df['Date'] = pd.to_datetime(pl_git_df['Date'])
@@ -110,7 +74,7 @@ pl_out_df = pl_out_df.fillna(0.00).round(2).drop_duplicates(subset=['Date'],keep
 pl_out_df = pl_out_df.sort_values(by=['Date'])
 pl_out_df.to_csv('PointLoma_sewage_seqs.csv', index=False)
 # pl_out_df.to_csv('freyja_reports/output/PointLoma_sewage_seqs.csv')
-enc_agg['Date'] = pd.to_datetime(enc_agg['Date'], format='%m/%d/%y')
+enc_agg['Date'] = pd.to_datetime(enc_agg['Date'], format='%Y-%m-%d')
 enc_git_df = pd.read_csv("https://raw.githubusercontent.com/andersen-lab/SARS-CoV-2_WasteWater_San-Diego/master/Encina_sewage_seqs.csv")
 # enc_git_df = enc_git_df.drop(enc_git_df.tail(7).index)
 enc_git_df['Date'] = pd.to_datetime(enc_git_df['Date'])
@@ -120,7 +84,7 @@ enc_out_df = enc_out_df.fillna(0.00).round(2).drop_duplicates(subset=['Date'],ke
 enc_out_df = enc_out_df.sort_values(by=['Date'])
 enc_out_df.to_csv('Encina_sewage_seqs.csv', index=False)
 # enc_out_df.to_csv('freyja_reports/output/Encina_sewage_seqs.csv')
-sb_agg['Date'] = pd.to_datetime(sb_agg['Date'], format='%m/%d/%y')
+sb_agg['Date'] = pd.to_datetime(sb_agg['Date'], format='%Y-%m-%d')
 sb_git_df = pd.read_csv("https://raw.githubusercontent.com/andersen-lab/SARS-CoV-2_WasteWater_San-Diego/master/SouthBay_sewage_seqs.csv")
 # sb_git_df = sb_git_df.drop(sb_git_df.tail(8).index)
 sb_git_df['Date'] = pd.to_datetime(sb_git_df['Date'])
