@@ -20,12 +20,12 @@ my_func() {
     echo $fn
     echo $depthfile0
     echo $output0
-    freyja demix $fn $depthfile0 --output $output0 --eps 0.0000001
+    freyja demix $fn $depthfile0 --output $output0 --eps 0.0000001 --autoadapt
 
 }
 
 export -f my_func
-parallel -j 24 my_func ::: variants/* ::: depths/ ::: outputs/
+parallel -j 16 my_func ::: variants/* ::: depths/ ::: outputs/
 freyja aggregate outputs/ --output agg_outputs.tsv
 
 python polish_outputs.py
