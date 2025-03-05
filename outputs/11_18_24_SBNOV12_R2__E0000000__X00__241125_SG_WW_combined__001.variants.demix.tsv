@@ -1,6 +1,6 @@
 	variants/11_18_24_SBNOV12_R2__E0000000__X00__241125_SG_WW_combined__001.variants.tsv
-summarized	[('KP.3* (KP.3.X)', 0.9999999995814224)]
+summarized	[('KP.3* (KP.3.X)', 0.999999999996117)]
 lineages	KP.3.3.3 KP.3.3.4
-abundances	0.99998131 0.00001869
-resid	6.383102575935359
+abundances	0.99999982 0.00000018
+resid	6.38328491853817
 coverage	53.874193224760056
