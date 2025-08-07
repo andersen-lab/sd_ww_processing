@@ -10,5 +10,5 @@ To run use the docker container,
 
 ```
 docker build -t condaforge/miniforge3:freyja-2.0.0 .
-docker run condaforge/miniforge3:freyja-2.0.0
+docker run -v $(pwd):/data condaforge/miniforge3:freyja-2.0.0
 ```
