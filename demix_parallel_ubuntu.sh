@@ -2,6 +2,9 @@
 
 # Works with Docker image: condaforge/miniforge3:23.11.0-0
 
+prefix=$1
+cd $1/
+
 # for uniform naming
 cd variants/
 # rename 1.tsv 1.variants.tsv *1.tsv
