@@ -27,7 +27,7 @@ lineage_info = {}
 for lineage in lineages_yml:
     lineage_info[lineage['name']] = {'children': lineage['children']}
 agg_df = pd.read_csv(f'agg_outputs.tsv', skipinitialspace=True, sep='\t',index_col=0)
-agg_df = agg_df[agg_df['coverage'] > 75]
+agg_df = agg_df[agg_df['coverage'] > 50]
 agg_df = prepLineageDict(agg_df,thresh=0.0000000001,config=plot_config,lineage_info=lineage_info)
 formatted_agg = agg_df['linDict'].apply(pd.Series)
 # drop any columns that aren't in the plot_config file
@@ -50,16 +50,22 @@ sb_agg = sb_agg.reset_index()
 
 lookup = pd.read_csv('all-ww-metadata.csv').drop_duplicates(keep='first')
 lookup = lookup.set_index('sample_name')
-for i in range(len(pl_agg)):
-    pl_agg['index'][i] = lookup.loc[pl_agg['index'][i].split('__')[0],'collection_date']
-for i in range(len(enc_agg)):
-    enc_agg['index'][i] = lookup.loc[enc_agg['index'][i].split('__')[0],'collection_date']
-for i in range(len(sb_agg)):
-    sb_agg['index'][i] = lookup.loc[sb_agg['index'][i].split('__')[0],'collection_date']
 
-pl_agg = pl_agg.rename(columns={"index": "Date"})
-enc_agg = enc_agg.rename(columns={"index": "Date"})
-sb_agg = sb_agg.rename(columns={"index": "Date"})
+def add_date_to_agg(agg_df, lookup):
+    keys = agg_df['index'].str.split('__').str[0]
+    agg_df['collection_date'] = keys.map(lookup['collection_date'])
+    print("Following rows were dropped because index was not in all-ww-metadata.csv")
+    print("\n".join(agg_df[agg_df['collection_date'].isna()]['index'].tolist()))
+    print("\n")
+    agg_df.dropna(subset=['collection_date'], inplace=True)
+    agg_df.drop(columns=['index'], inplace=True)
+
+for agg_df in [pl_agg, enc_agg, sb_agg]:
+    add_date_to_agg(agg_df, lookup)
+
+pl_agg = pl_agg.rename(columns={"collection_date": "Date"})
+enc_agg = enc_agg.rename(columns={"collection_date": "Date"})
+sb_agg = sb_agg.rename(columns={"collection_date": "Date"})
 # pull the latest summary files from github and read as df
 # https://raw.githubusercontent.com/andersen-lab/SARS-CoV-2_WasteWater_San-Diego/master/PointLoma_sewage_seqs.csv
 # https://raw.githubusercontent.com/andersen-lab/SARS-CoV-2_WasteWater_San-Diego/master/Encina_sewage_seqs.csv
