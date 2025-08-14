@@ -1,6 +1,8 @@
 # sd_ww_processing
 repo for data storage and shared analyses
 
+Repository for dashboard is at [andersen-lab/SARS-CoV-2_WasteWater_San-Diego](https://github.com/andersen-lab/SARS-CoV-2_WasteWater_San-Diego).
+
 ## Instructions
 
 
