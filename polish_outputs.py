@@ -27,7 +27,7 @@ lineage_info = {}
 for lineage in lineages_yml:
     lineage_info[lineage['name']] = {'children': lineage['children']}
 agg_df = pd.read_csv(f'agg_outputs.tsv', skipinitialspace=True, sep='\t',index_col=0)
-agg_df = agg_df[agg_df['coverage'] > 50]
+agg_df = agg_df[agg_df['coverage'] > 60]
 agg_df = prepLineageDict(agg_df,thresh=0.0000000001,config=plot_config,lineage_info=lineage_info)
 formatted_agg = agg_df['linDict'].apply(pd.Series)
 # drop any columns that aren't in the plot_config file
@@ -74,6 +74,7 @@ pl_agg['Date'] = pd.to_datetime(pl_agg['Date'], format='%Y-%m-%d')
 pl_git_df = pd.read_csv("https://raw.githubusercontent.com/andersen-lab/SARS-CoV-2_WasteWater_San-Diego/master/PointLoma_sewage_seqs.csv")
 # pl_git_df = pl_git_df.drop(pl_git_df.tail(16).index)
 pl_git_df['Date'] = pd.to_datetime(pl_git_df['Date'])
+pl_git_df = pl_git_df[pl_git_df['Date']<=pl_agg['Date'].min()] # allow changes in parameters to impact the outputs
 pl_out_df = pd.concat([pl_git_df, pl_agg])
 # pl_out_df = pl_out_df[['Date', 'BA.1', 'BA.1.1.X', 'BA.2.X', 'BA.2.12.X', 'BA.4.X', 'BA.5.X', 'B.1.1.529', 'AY.113', 'AY.100', 'AY.20', 'AY.25', 'AY.3', 'AY.44', 'AY.119', 'AY.3.1', 'AY.103', 'AY.46.4', 'AY.25.1', 'AY.116', 'AY.43.4', 'Other Delta sub-lineages','BA.2.75', 'BA.4.6', 'BQ.1.X', 'BQ.1.1.X', 'BF.7.X','BN.1.X', 'XBB.X', 'XBB.1.5.X', 'XBB.1.9.X', 'XBB.1.16.X', 'XBB.2.3.X', 'EG.5.X', 'BA.2.86.X', 'HV.1.X', 'JN.1.X', 'JN.1.7.X', 'JN.1.4.X', 'KQ.1.X', 'JN.1.11.X', 'KP.2.X', 'Recombinants', 'Other']]
 pl_out_df = pl_out_df.fillna(0.00).round(2).drop_duplicates(subset=['Date'],keep='last')
@@ -84,6 +85,7 @@ enc_agg['Date'] = pd.to_datetime(enc_agg['Date'], format='%Y-%m-%d')
 enc_git_df = pd.read_csv("https://raw.githubusercontent.com/andersen-lab/SARS-CoV-2_WasteWater_San-Diego/master/Encina_sewage_seqs.csv")
 # enc_git_df = enc_git_df.drop(enc_git_df.tail(7).index)
 enc_git_df['Date'] = pd.to_datetime(enc_git_df['Date'])
+enc_git_df = enc_git_df[enc_git_df['Date']<=enc_agg['Date'].min()]
 enc_out_df = pd.concat([enc_git_df, enc_agg])
 # enc_out_df = enc_out_df[['Date', 'BA.1', 'BA.1.1.X', 'BA.2.X', 'BA.2.12.X', 'BA.4.X', 'BA.5.X', 'BA.2.75', 'BA.4.6', 'BQ.1.X', 'BQ.1.1.X', 'BF.7.X', 'XBB.X', 'XBB.1.5.X', 'XBB.1.9.X', 'XBB.1.16.X', 'XBB.2.3.X', 'EG.5.X', 'BA.2.86.X', 'HV.1.X', 'JN.1.X', 'JN.1.7.X', 'JN.1.4.X', 'KQ.1.X', 'JN.1.11.X', 'KP.2.X', 'Recombinants', 'Other']]
 enc_out_df = enc_out_df.fillna(0.00).round(2).drop_duplicates(subset=['Date'],keep='last')
@@ -94,6 +96,7 @@ sb_agg['Date'] = pd.to_datetime(sb_agg['Date'], format='%Y-%m-%d')
 sb_git_df = pd.read_csv("https://raw.githubusercontent.com/andersen-lab/SARS-CoV-2_WasteWater_San-Diego/master/SouthBay_sewage_seqs.csv")
 # sb_git_df = sb_git_df.drop(sb_git_df.tail(8).index)
 sb_git_df['Date'] = pd.to_datetime(sb_git_df['Date'])
+sb_git_df = sb_git_df[sb_git_df['Date']<=sb_agg['Date'].min()]
 sb_out_df = pd.concat([sb_git_df, sb_agg])
 # sb_out_df = sb_out_df[['Date', 'BA.1', 'BA.1.1.X', 'BA.2.X', 'BA.2.12.X', 'BA.4.X', 'BA.5.X', 'BA.2.75', 'BA.4.6', 'BQ.1.X', 'BQ.1.1.X', 'BF.7.X', 'XBB.X', 'XBB.1.5.X', 'XBB.1.9.X', 'XBB.1.16.X', 'XBB.2.3.X', 'EG.5.X', 'BA.2.86.X', 'HV.1.X', 'JN.1.X', 'JN.1.7.X', 'JN.1.4.X', 'KQ.1.X', 'JN.1.11.X', 'KP.2.X', 'Recombinants', 'Other']]
 sb_out_df = sb_out_df.fillna(0.00).round(2).drop_duplicates(subset=['Date'],keep='last')
