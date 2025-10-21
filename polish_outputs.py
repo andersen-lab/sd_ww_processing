@@ -51,8 +51,12 @@ sb_agg = sb_agg.reset_index()
 lookup = pd.read_csv('all-ww-metadata.csv').drop_duplicates(keep='first')
 lookup = lookup.set_index('sample_name')
 
+
+
 def add_date_to_agg(agg_df, lookup):
     keys = agg_df['index'].str.split('__').str[0]
+    print("The following entries are included multiple times:", keys[keys.duplicated()])
+    print("The following lookups are included multiple times:", lookup.index[lookup.index.duplicated()])
     agg_df['collection_date'] = keys.map(lookup['collection_date'])
     print("Following rows were dropped because index was not in all-ww-metadata.csv")
     print("\n".join(agg_df[agg_df['collection_date'].isna()]['index'].tolist()))
