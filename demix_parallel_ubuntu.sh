@@ -37,7 +37,8 @@ export -f my_func
 export SHELL=/bin/bash
 export RAYON_NUM_THREADS=1 # Limit number of threads to 1
 
-parallel --env RAYON_NUM_THREADS --env my_func -j 30 my_func ::: variants/* ::: depths/ ::: outputs/
+parallel --env RAYON_NUM_THREADS --env my_func -j 30 my_func {} depths/ outputs/ ::: variants/*_25_*
+
 freyja aggregate outputs/ --output agg_outputs.tsv
 
 python polish_outputs.py
