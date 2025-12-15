@@ -30,5 +30,11 @@ if 'Other' in df.index:
     df = df.drop(index=['Other'])
 df['EA'] = df['Estimated Advantage'].apply(lambda x:x[0:len(x)-1]).astype(float)
 df = df.sort_values(by='EA',ascending=False)
+# drop lineages with too high of uncertainty (about zero)
+unc_thresh = 20
+for lin in df.index:
+    lims = df.loc[lin,'Bootstrap 95% interval'].replace('[','').replace(']','').replace('%','').split(' , ')
+    if float(lims[0])<-unc_thresh and float(lims[1])> unc_thresh:
+        df=df.drop(index=lin) 
 df= df.drop(columns=['EA'])
 df.to_csv('rel_growth_rates.csv')

@@ -25,7 +25,7 @@ my_func() {
 }
 
 export -f my_func
-parallel -j 30 my_func {} depths/ outputs/ ::: variants/*_25_*
+parallel -j 40 my_func {} depths/ outputs/ ::: variants/*_25_*
 freyja aggregate outputs/ --output agg_outputs.tsv
 
 python polish_outputs.py
